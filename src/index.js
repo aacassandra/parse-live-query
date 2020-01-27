@@ -1,4 +1,6 @@
 export class ParseLQ {
+  mode = "production";
+
   options = {
     applicationId: "",
     javascriptKey: "",
@@ -78,7 +80,8 @@ export class ParseLQ {
       masterKey: "",
       restAPIKey: "",
       clientKey: ""
-    }
+    },
+    mode = "production"
   ) {
     this.options = {
       applicationId: options.applicationId,
@@ -90,6 +93,8 @@ export class ParseLQ {
       className: "",
       requestId: ""
     };
+
+    this.mode = mode;
 
     this.client = new WebSocket(this.options.serverURL, ["protocolOne"]);
   }
@@ -110,7 +115,9 @@ export class ParseLQ {
     this.client.onmessage = e => {
       const res = JSON.parse(e.data);
       if (res.op === "connected") {
-        console.log("connected");
+        if (this.mode == "development") {
+          console.log("connected");
+        }
         this.connected = true;
       }
     };
@@ -142,7 +149,9 @@ export class ParseLQ {
         this.client.onmessage = e => {
           const res = JSON.parse(e.data);
           if (res.op === "subscribed") {
-            console.log("subscribed");
+            if (this.mode == "development") {
+              console.log("subscribed");
+            }
             this.subscribed = true;
           }
         };
@@ -162,7 +171,9 @@ export class ParseLQ {
     this.client.onmessage = e => {
       const res = JSON.parse(e.data);
       if (res.op === "unsubscribed") {
-        console.log("unsubscribed");
+        if (this.mode == "development") {
+          console.log("unsubscribed");
+        }
         this.subscribed = false;
       }
     };
